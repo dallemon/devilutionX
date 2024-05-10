@@ -51,6 +51,7 @@ jobs:
       - name: Create Build Environment
         run: |
           brew update
+          brew upgrade
           brew bundle install
 
       - name: Cache CMake build folder
