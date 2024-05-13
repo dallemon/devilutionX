@@ -50,6 +50,15 @@ jobs:
 
       - name: Create Build Environment
         run: |
+          # cleanup brew
+          brew unlink $(brew list --formulae)
+          # remove installed brew
+          rm -r /usr/local/Homebrew
+          # install fresh brew
+          NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          # update and install deps
+          brew update-reset
+          brew update
           brew bundle install
 
       - name: Cache CMake build folder
