@@ -53,7 +53,7 @@ jobs:
           # cleanup brew
           brew unlink $(brew list --formulae)
           # remove installed brew
-          rm -r /opt/homebrew/
+          sudo rm -rf $(brew --prefix)
           # install fresh brew
           NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           # update and install deps
