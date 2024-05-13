@@ -51,9 +51,9 @@ jobs:
       - name: Create Build Environment
         run: |
           brew unlink $(brew list --formulae)
-          sudo rm -rf $(brew --prefix)\Cask
-          sudo rm -rf $(brew --prefix)\Cellar
-          sudo rm -rfv $(brew --prefix)\
+          sudo rm -rf $(brew --prefix)/Cask
+          sudo rm -rf $(brew --prefix)/Cellar
+          sudo rm -rfv $(brew --prefix)/
           NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew update-reset
           brew update
