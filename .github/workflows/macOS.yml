@@ -50,13 +50,11 @@ jobs:
 
       - name: Create Build Environment
         run: |
-          # cleanup brew
           brew unlink $(brew list --formulae)
-          # remove installed brew
-          sudo rm -rf $(brew --prefix)
-          # install fresh brew
+          sudo rm -rf $(brew --prefix)\Cask
+          sudo rm -rf $(brew --prefix)\Cellar
+          sudo rm -rfv $(brew --prefix)\
           NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          # update and install deps
           brew update-reset
           brew update
           brew bundle install
