@@ -18,10 +18,11 @@ if(APPLE)
   FetchContent_Declare(SDL2
   URL https://github.com/libsdl-org/SDL/releases/download/release-2.30.3/SDL2-2.30.3.dmg
   URL_HASH SHA256=80192f584862c44d9b742183c14ab0431f565ff86bb16418f5a77384c69e81fe
+  )
 else()
   FetchContent_Declare(SDL2
     URL https://github.com/libsdl-org/SDL/releases/download/release-2.30.2/SDL2-2.30.2.tar.gz
     URL_HASH SHA256=891d66ac8cae51361d3229e3336ebec1c407a8a2a063b61df14f5fdf3ab5ac31
+  )
 endif()
-)
 FetchContent_MakeAvailableExcludeFromAll(SDL2)
