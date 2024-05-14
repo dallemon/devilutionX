@@ -64,6 +64,7 @@ jobs:
           cmake \
             -S . \
             -B build \
+            -G Xcode \
             -D BUILD_SHARED_LIBS=OFF \
             -D BUILD_TESTING=OFF \
             -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
@@ -75,6 +76,7 @@ jobs:
             -D PLATFORM=${{ matrix.platform }} \
             -D DEVILUTIONX_STATIC_BZIP2=ON \
             -D DEVILUTIONX_STATIC_LIBFMT=ON \
+            -D DEVILUTIONX_STATIC_LIBPNG=ON \
             -D DEVILUTIONX_STATIC_LIBSODIUM=ON \
             -D DEVILUTIONX_STATIC_LUA=ON \
             -D DEVILUTIONX_STATIC_SDL2=ON \
@@ -84,6 +86,7 @@ jobs:
             -D DEVILUTIONX_STATIC_ZLIB=ON \
             -D DEVILUTIONX_SYSTEM_BZIP2=OFF \
             -D DEVILUTIONX_SYSTEM_LIBFMT=OFF \
+            -D DEVILUTIONX_SYSTEM_LIBPNG=OFF \
             -D DEVILUTIONX_SYSTEM_LIBSODIUM=OFF \
             -D DEVILUTIONX_SYSTEM_LUA=OFF \
             -D DEVILUTIONX_SYSTEM_SDL2=OFF \
