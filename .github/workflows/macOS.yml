@@ -89,7 +89,8 @@ jobs:
             -D DEVILUTIONX_SYSTEM_SDL_AUDIOLIB=OFF \
             -D DEVILUTIONX_SYSTEM_SDL_IMAGE=OFF \
             -D DEVILUTIONX_SYSTEM_SIMPLEINI=OFF \
-            -D DEVILUTIONX_SYSTEM_ZLIB=OFF
+            -D DEVILUTIONX_SYSTEM_ZLIB=OFF \
+            -D PIE=ON
             
 
       - name: Build
