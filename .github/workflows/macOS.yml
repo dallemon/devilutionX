@@ -70,7 +70,17 @@ jobs:
             -D DEPLOYMENT_TARGET=${{ matrix.target }} \
             -D BUILD_TESTING=OFF \
             -D MACOSX_STANDALONE_APP_BUNDLE=ON \
-            -D DISCORD_INTEGRATION=ON
+            -D DISCORD_INTEGRATION=ON \
+            -D DEVILUTIONX_SYSTEM_BZIP2=OFF \
+            -D DEVILUTIONX_SYSTEM_LIBFMT=OFF \
+            -D DEVILUTIONX_SYSTEM_LIBSODIUM=OFF \
+            -D DEVILUTIONX_SYSTEM_LUA=OFF \
+            -D DEVILUTIONX_SYSTEM_SDL2=OFF \
+            -D DEVILUTIONX_SYSTEM_SDL_AUDIOLIB=OFF \
+            -D DEVILUTIONX_SYSTEM_SDL_IMAGE=OFF \
+            -D DEVILUTIONX_SYSTEM_SIMPLEINI=OFF \
+            -D DEVILUTIONX_SYSTEM_ZLIB=OFF
+            
 
       - name: Build
         working-directory: ${{github.workspace}}
