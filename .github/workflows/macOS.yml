@@ -64,6 +64,7 @@ jobs:
           cmake \
             -S . \
             -B build \
+            -G Xcode
             -D CMAKE_TOOLCHAIN_FILE=../CMake/platforms/ios.toolchain.cmake \
             -D PLATFORM=${{ matrix.platform }} \
             -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
