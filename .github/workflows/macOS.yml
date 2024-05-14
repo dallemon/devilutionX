@@ -28,7 +28,7 @@ jobs:
         arch: [x86_64, arm64]
         os: [13, 14]
         platform: [MAC, MAC_ARM64]
-        target: [10.12, 11]
+        target: [10.13, 11]
         exclude:
           - arch: x86_64
             os: 14
@@ -41,7 +41,7 @@ jobs:
           - arch: arm64
             platform: MAC
           - arch: arm64
-            target: 10.12
+            target: 10.13
     runs-on: macos-${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
