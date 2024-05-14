@@ -16,7 +16,7 @@ include(functions/FetchContent_MakeAvailableExcludeFromAll)
 include(FetchContent)
 FetchContent_Declare(
   SDL2
-  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git/releases/download/release-2.30.3/SDL2-2.30.3.tar.gz
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
   GIT_TAG        fb1497566c5a05e2babdcf45ef0ab5c7cca2c4ae # release-2.30.3
 )
 FetchContent_MakeAvailableExcludeFromAll(SDL2)
