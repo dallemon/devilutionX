@@ -27,13 +27,13 @@ jobs:
       matrix:
         arch: [x86_64, arm64]
         os: [13, 14]
-        platform: [MAC, MAC_ARM64]
+        platform: [MAC, MAC_UNIVERSAL]
         target: [10.13, 11]
         exclude:
           - arch: x86_64
             os: 14
           - arch: x86_64
-            platform: MAC_ARM64
+            platform: MAC_UNIVERSAL
           - arch: x86_64
             target: 11
           - arch: arm64
@@ -65,14 +65,15 @@ jobs:
             -S . \
             -B build \
             -G Xcode \
-            -D CMAKE_TOOLCHAIN_FILE=../CMake/platforms/ios.toolchain.cmake \
-            -D PLATFORM=${{ matrix.platform }} \
-            -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
-            -D DEPLOYMENT_TARGET=${{ matrix.target }} \
             -D BUILD_SHARED_LIBS=OFF \
             -D BUILD_TESTING=OFF \
-            -D MACOSX_STANDALONE_APP_BUNDLE=ON \
+            -D CMAKE_BUILD_TYPE=Release \
+            -D CMAKE_TOOLCHAIN_FILE=../CMake/platforms/ios.toolchain.cmake \
+            -D DEPLOYMENT_TARGET=${{ matrix.target }} \
             -D DISCORD_INTEGRATION=ON \
+            -D ENABLE_STRICT_TRY_COMPILE=ON \
+            -D MACOSX_STANDALONE_APP_BUNDLE=ON \
+            -D PLATFORM=${{ matrix.platform }} \
             -D DEVILUTIONX_STATIC_BZIP2=ON \
             -D DEVILUTIONX_STATIC_LIBFMT=ON \
             -D DEVILUTIONX_STATIC_LIBSODIUM=ON \
@@ -101,7 +102,7 @@ jobs:
           cmake \
             --build build \
             -j $(sysctl -n hw.physicalcpu) \
-            --target package && \
+            --target release && \
           mv build/devilutionx.dmg build/devilutionx-${{ matrix.arch }}-macOS.dmg
 
       - name: Upload-Package
