@@ -24,9 +24,10 @@ if(APPLE AND "${CMAKE_OSX_ARCHITECTURES}" STREQUAL "arm64")
 endif()
 
 include(FetchContent)
-FetchContent_Declare(libpng
-  URL https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz
-  URL_HASH SHA256=fecc95b46cf05e8e3fc8a414750e0ba5aad00d89e9fdf175e94ff041caf1a03a
+FetchContent_Declare(
+  libpng
+  GIT_REPOSITORY https://github.com/pnggroup/libpng.git
+  GIT_TAG        ed217e3e601d8e462f7fd1e04bed43ac42212429 # v1.6.43
 )
 FetchContent_MakeAvailableExcludeFromAll(libpng)
 
