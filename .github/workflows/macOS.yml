@@ -51,7 +51,15 @@ jobs:
       - name: Install dependencies
         run: |
           brew update
-          brew install sdl2
+          brew install \
+            bzip2 \
+            fmt \
+            libpng \
+            libsodium \
+            lua \
+            sdl2 \
+            sdl2_image \
+            zlib
 
       - name: Cache CMake build folder
         uses: actions/cache@v4
@@ -70,7 +78,7 @@ jobs:
             -S . \
             -B build \
             -G Xcode \
-            -D BUILD_SHARED_LIBS=OFF \
+            -D BUILD_SHARED_LIBS=ON \
             -D BUILD_TESTING=OFF \
             -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
             -D CMAKE_TOOLCHAIN_FILE=../CMake/platforms/ios.toolchain.cmake \
@@ -79,26 +87,26 @@ jobs:
             -D ENABLE_STRICT_TRY_COMPILE=ON \
             -D MACOSX_STANDALONE_APP_BUNDLE=ON \
             -D PLATFORM=${{ matrix.platform }} \
-            -D DEVILUTIONX_STATIC_BZIP2=ON \
-            -D DEVILUTIONX_STATIC_LIBFMT=ON \
-            -D DEVILUTIONX_STATIC_LIBPNG=ON \
-            -D DEVILUTIONX_STATIC_LIBSODIUM=ON \
-            -D DEVILUTIONX_STATIC_LUA=ON \
+            -D DEVILUTIONX_STATIC_BZIP2=OFF \
+            -D DEVILUTIONX_STATIC_LIBFMT=OFF \
+            -D DEVILUTIONX_STATIC_LIBPNG=OFF \
+            -D DEVILUTIONX_STATIC_LIBSODIUM=OFF \
+            -D DEVILUTIONX_STATIC_LUA=OFF \
             -D DEVILUTIONX_STATIC_SDL2=OFF \
-            -D DEVILUTIONX_STATIC_SDL_AUDIOLIB=ON \
-            -D DEVILUTIONX_STATIC_SDL_IMAGE=ON \
-            -D DEVILUTIONX_STATIC_SIMPLEINI=ON \
-            -D DEVILUTIONX_STATIC_ZLIB=ON \
-            -D DEVILUTIONX_SYSTEM_BZIP2=OFF \
-            -D DEVILUTIONX_SYSTEM_LIBFMT=OFF \
-            -D DEVILUTIONX_SYSTEM_LIBPNG=OFF \
-            -D DEVILUTIONX_SYSTEM_LIBSODIUM=OFF \
-            -D DEVILUTIONX_SYSTEM_LUA=OFF \
+            -D DEVILUTIONX_STATIC_SDL_AUDIOLIB=OFF \
+            -D DEVILUTIONX_STATIC_SDL_IMAGE=OFF \
+            -D DEVILUTIONX_STATIC_SIMPLEINI=OFF \
+            -D DEVILUTIONX_STATIC_ZLIB=OFF \
+            -D DEVILUTIONX_SYSTEM_BZIP2=ON \
+            -D DEVILUTIONX_SYSTEM_LIBFMT=ON \
+            -D DEVILUTIONX_SYSTEM_LIBPNG=ON \
+            -D DEVILUTIONX_SYSTEM_LIBSODIUM=ON \
+            -D DEVILUTIONX_SYSTEM_LUA=ON \
             -D DEVILUTIONX_SYSTEM_SDL2=ON \
             -D DEVILUTIONX_SYSTEM_SDL_AUDIOLIB=OFF \
-            -D DEVILUTIONX_SYSTEM_SDL_IMAGE=OFF \
+            -D DEVILUTIONX_SYSTEM_SDL_IMAGE=ON \
             -D DEVILUTIONX_SYSTEM_SIMPLEINI=OFF \
-            -D DEVILUTIONX_SYSTEM_ZLIB=OFF \
+            -D DEVILUTIONX_SYSTEM_ZLIB=ON \
             -D PIE=ON
             
 
