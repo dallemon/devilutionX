@@ -57,8 +57,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: build
-          key: macos-${{ matrix.arch }}-v3-${{ github.sha }}
-          restore-keys: macos-${{ matrix.arch }}-v3-
+          key: macos-${{ matrix.arch }}-v4-${{ github.sha }}
+          restore-keys: macos-${{ matrix.arch }}-v4-
 
       - name: Configure CMake
         working-directory: ${{github.workspace}}
