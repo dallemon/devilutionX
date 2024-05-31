@@ -27,13 +27,13 @@ jobs:
       matrix:
         arch: [x86_64, arm64]
         os: [13, 14]
-        platform: [MAC, MAC_UNIVERSAL]
+        platform: [MAC, MAC_ARM64]
         target: [10.13, 11]
         exclude:
           - arch: x86_64
             os: 14
           - arch: x86_64
-            platform: MAC_UNIVERSAL
+            platform: MAC_ARM64
           - arch: x86_64
             target: 11
           - arch: arm64
@@ -64,7 +64,6 @@ jobs:
           cmake \
             -S . \
             -B build \
-            -G Xcode \
             -D BUILD_SHARED_LIBS=OFF \
             -D BUILD_TESTING=OFF \
             -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
