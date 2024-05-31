@@ -48,6 +48,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install cmake sdl2
+
       - name: Cache CMake build folder
         uses: actions/cache@v4
         with:
@@ -78,7 +83,7 @@ jobs:
             -D DEVILUTIONX_STATIC_LIBPNG=ON \
             -D DEVILUTIONX_STATIC_LIBSODIUM=ON \
             -D DEVILUTIONX_STATIC_LUA=ON \
-            -D DEVILUTIONX_STATIC_SDL2=ON \
+            -D DEVILUTIONX_STATIC_SDL2=OFF \
             -D DEVILUTIONX_STATIC_SDL_AUDIOLIB=ON \
             -D DEVILUTIONX_STATIC_SDL_IMAGE=ON \
             -D DEVILUTIONX_STATIC_SIMPLEINI=ON \
@@ -88,7 +93,7 @@ jobs:
             -D DEVILUTIONX_SYSTEM_LIBPNG=OFF \
             -D DEVILUTIONX_SYSTEM_LIBSODIUM=OFF \
             -D DEVILUTIONX_SYSTEM_LUA=OFF \
-            -D DEVILUTIONX_SYSTEM_SDL2=OFF \
+            -D DEVILUTIONX_SYSTEM_SDL2=ON \
             -D DEVILUTIONX_SYSTEM_SDL_AUDIOLIB=OFF \
             -D DEVILUTIONX_SYSTEM_SDL_IMAGE=OFF \
             -D DEVILUTIONX_SYSTEM_SIMPLEINI=OFF \
