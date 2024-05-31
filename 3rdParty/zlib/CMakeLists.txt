@@ -3,11 +3,10 @@ include(functions/FetchContent_MakeAvailableExcludeFromAll)
 set(CMAKE_POLICY_DEFAULT_CMP0048 NEW)
 
 include(FetchContent)
-FetchContent_Declare(zlib
-    URL https://www.zlib.net/zlib-1.3.tar.gz
-        https://www.zlib.net/fossils/zlib-1.3.tar.gz
-        https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.gz
-    URL_HASH MD5=60373b133d630f74f4a1f94c1185a53f
+FetchContent_Declare(
+  zlib
+  GIT_REPOSITORY https://github.com/madler/zlib.git
+  GIT_TAG        51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf # v1.3.1
 )
 FetchContent_MakeAvailableExcludeFromAll(zlib)
 

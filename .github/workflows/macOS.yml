@@ -1,0 +1,127 @@
+---
+name: macOS
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+  pull_request:
+    types: [opened, synchronize]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
+        os: [13, 14]
+        platform: [MAC, MAC_ARM64]
+        target: [10.13, 11]
+        exclude:
+          - arch: x86_64
+            os: 14
+          - arch: x86_64
+            platform: MAC_ARM64
+          - arch: x86_64
+            target: 11
+          - arch: arm64
+            os: 13
+          - arch: arm64
+            platform: MAC
+          - arch: arm64
+            target: 10.13
+    runs-on: macos-${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install \
+            fmt \
+            lua \
+            sdl2 \
+            sdl2_image
+
+      - name: Cache CMake build folder
+        uses: actions/cache@v4
+        with:
+          path: build
+          key: macos-${{ matrix.arch }}-v4-${{ github.sha }}
+          restore-keys: macos-${{ matrix.arch }}-v4-
+
+      - name: Configure CMake
+        working-directory: ${{github.workspace}}
+        shell: bash
+        env:
+          CMAKE_BUILD_TYPE: ${{github.event_name == 'release' && 'Release' || 'RelWithDebInfo'}}
+        run: |
+          cmake \
+            -S . \
+            -B build \
+            -D BUILD_SHARED_LIBS=ON \
+            -D BUILD_TESTING=OFF \
+            -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
+            -D CMAKE_TOOLCHAIN_FILE=../CMake/platforms/ios.toolchain.cmake \
+            -D DEPLOYMENT_TARGET=${{ matrix.target }} \
+            -D DISCORD_INTEGRATION=ON \
+            -D ENABLE_STRICT_TRY_COMPILE=ON \
+            -D MACOSX_STANDALONE_APP_BUNDLE=ON \
+            -D PLATFORM=${{ matrix.platform }} \
+            -D DEVILUTIONX_STATIC_BZIP2=OFF \
+            -D DEVILUTIONX_STATIC_LIBFMT=OFF \
+            -D DEVILUTIONX_STATIC_LIBPNG=OFF \
+            -D DEVILUTIONX_STATIC_LIBSODIUM=OFF \
+            -D DEVILUTIONX_STATIC_LUA=OFF \
+            -D DEVILUTIONX_STATIC_SDL2=OFF \
+            -D DEVILUTIONX_STATIC_SDL_AUDIOLIB=OFF \
+            -D DEVILUTIONX_STATIC_SDL_IMAGE=OFF \
+            -D DEVILUTIONX_STATIC_SIMPLEINI=OFF \
+            -D DEVILUTIONX_STATIC_ZLIB=OFF \
+            -D DEVILUTIONX_SYSTEM_BZIP2=ON \
+            -D DEVILUTIONX_SYSTEM_LIBFMT=ON \
+            -D DEVILUTIONX_SYSTEM_LIBPNG=ON \
+            -D DEVILUTIONX_SYSTEM_LIBSODIUM=ON \
+            -D DEVILUTIONX_SYSTEM_LUA=ON \
+            -D DEVILUTIONX_SYSTEM_SDL2=ON \
+            -D DEVILUTIONX_SYSTEM_SDL_AUDIOLIB=OFF \
+            -D DEVILUTIONX_SYSTEM_SDL_IMAGE=ON \
+            -D DEVILUTIONX_SYSTEM_SIMPLEINI=OFF \
+            -D DEVILUTIONX_SYSTEM_ZLIB=ON \
+            -D PIE=ON
+            
+
+      - name: Build
+        working-directory: ${{github.workspace}}
+        shell: bash
+        run: |
+          cmake \
+            --build build \
+            -j $(sysctl -n hw.physicalcpu) \
+            --target package && \
+          mv build/devilutionx.dmg build/devilutionx-${{ matrix.arch }}-macOS.dmg
+
+      - name: Upload-Package
+        if: ${{ !env.ACT }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: devilutionx-${{ matrix.arch }}-macOS.dmg
+          path: build/devilutionx-${{ matrix.arch }}-macOS.dmg
+
+      - name: Clean up artifacts
+        run: rm -rf build/_CPack_Packages build/*.dmg
+...
