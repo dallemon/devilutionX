@@ -51,7 +51,7 @@ jobs:
       - name: Install dependencies
         run: |
           brew update
-          brew install cmake sdl2
+          brew install sdl2
 
       - name: Cache CMake build folder
         uses: actions/cache@v4
