@@ -1,0 +1,107 @@
+name: Ubuntu Linux
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LLVM_VERSION: 19
+  
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        cpu-arch: [i386, amd64, arm64]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        excludes:
+          - os: ubuntu-24.04
+            cpu-arch: arm64
+          - os: ubuntu-24.04-arm
+            cpu-arch: [i386, amd64]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: add i386 cpu-arch
+      if: ${{ matrix.cpu-arch }} == i386
+      run: sudo dpkg --add-architecture i386
+
+    - name: Add clang repo
+      shell: bash  
+      run: |
+        source /etc/os-release
+        curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/llvm.gpg
+        sudo chmod a+r /etc/apt/keyrings/llvm.gpg
+        echo "deb [arch=${{ matrix.cpu-arch }}] http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${LLVM_VERSION} main" \
+        | sudo tee /etc/apt/sources.list.d/llvm.list > /dev/null
+
+    - name: Install clang-${LLVM_VERSION}
+      run: |
+        sudo apt-get update
+        sudo apt-get install -yq clang-"${LLVM_VERSION}" lld-"${LLVM_VERSION}"
+        sudo update-alternatives --install \
+          /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} 200 && \
+        sudo update-alternatives --install \
+          /usr/bin/clang clang /usr/bin/clang-${LLVM_VERSION} 200 \
+          --slave /usr/bin/lld lld /usr/bin/lld-${LLVM_VERSION} \
+          --slave /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-${LLVM_VERSION}
+
+    - name: Cache CMake build folder
+      uses: actions/cache@v4
+      with:
+        path: build
+        key: ${{ github.workflow }}-v6-${{ github.sha }}
+        restore-keys: ${{ github.workflow }}-v6-
+
+    - name: Build
+      working-directory: ${{github.workspace}}
+      shell: bash
+      env:
+        CMAKE_BUILD_TYPE: ${{github.event_name == 'release' && 'Release' || 'RelWithDebInfo'}}
+      # We set DEVILUTIONX_SYSTEM_LIBFMT=OFF because its soversion changes frequently.
+      # We set DEVILUTIONX_SYSTEM_LIBSODIUM=OFF because its soversion changes frequently.
+      # We set DEVILUTIONX_SYSTEM_BZIP2=OFF because Fedora and Debian do not agree on how to link it.
+      run: |
+        cmake -S. -Bbuild -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} && \
+        cmake --build build --target package
+
+    - name: Package
+      run: Packaging/nix/LinuxReleasePackaging.sh && mv devilutionx.tar.xz devilutionx-${{ matrix.cpu-arch }}-linux-gnu.tar.xz
+
+    # AppImage cross-packaging is not implemented yet.
+    # - name: Package AppImage
+    #   run: Packaging/nix/AppImage.sh && mv devilutionx.appimage devilutionx-aarch64-linux-gnu.appimage
+
+    - name: Upload Package
+      if: ${{ !env.ACT }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: devilutionx-${{ matrix.cpu-arch }}-linux-gnu.tar.xz
+        path: devilutionx-${{ matrix.cpu-arch }}-linux-gnu.tar.xz
+
+    # AppImage cross-packaging is not implemented yet.
+    # - name: Upload AppImage
+    #   if: ${{ !env.ACT }}
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: devilutionx-aarch64-linux-gnu.appimage
+    #     path: devilutionx-aarch64-linux-gnu.appimage
+
+    - name: Update Release
+      if: ${{ github.event_name == 'release' && !env.ACT }}
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: devilutionx-${{ matrix.cpu-arch }}-linux-gnu.*
+        file_glob: true
+        overwrite: true
+
+    - name: Clean up artifacts
+      run: rm -rf build/_CPack_Packages build/package build/*.deb build/*.rpm build/*.appimage build/*.tar.xz
