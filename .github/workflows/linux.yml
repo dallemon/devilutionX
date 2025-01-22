@@ -52,7 +52,8 @@ jobs:
         source /etc/os-release
         curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/llvm.gpg
         sudo chmod a+r /etc/apt/keyrings/llvm.gpg
-        echo "deb [arch=${{ matrix.cpu-arch }}] http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${LLVM_VERSION} main" \
+        echo "deb [arch=${{ matrix.cpu-arch }} signed-by=/etc/apt/keyrings/llvm.gpg] \
+        http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${LLVM_VERSION} main" \
         | sudo tee /etc/apt/sources.list.d/llvm.list > /dev/null
 
     - name: Install clang-${LLVM_VERSION}
