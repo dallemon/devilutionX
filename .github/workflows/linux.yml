@@ -28,13 +28,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cpu-arch: [i386, amd64, arm64]
-        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        cpu-arch: 
+          - i386
+          - amd64
+          - arm64
+        os: 
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
         excludes:
           - os: ubuntu-24.04
             cpu-arch: arm64
           - os: ubuntu-24.04-arm
-            cpu-arch: [i386, amd64]
+            cpu-arch: 
+              - i386
+              - amd64
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
