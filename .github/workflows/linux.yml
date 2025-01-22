@@ -63,10 +63,10 @@ jobs:
         http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${LLVM_VERSION} main" \
         | sudo tee /etc/apt/sources.list.d/llvm.list > /dev/null
 
-    - name: Install clang-${LLVM_VERSION}
+    - name: Install clang
       run: |
         sudo apt-get update
-        sudo apt-get install -yq clang-"${LLVM_VERSION}" lld-"${LLVM_VERSION}"
+        sudo apt-get install -yq clang-${LLVM_VERSION} lld-${LLVM_VERSION}
         sudo update-alternatives --install \
           /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_VERSION} 200 && \
         sudo update-alternatives --install \
@@ -90,9 +90,13 @@ jobs:
       # We set DEVILUTIONX_SYSTEM_LIBSODIUM=OFF because its soversion changes frequently.
       # We set DEVILUTIONX_SYSTEM_BZIP2=OFF because Fedora and Debian do not agree on how to link it.
       run: |
-        cmake -S. -Bbuild -G Ninja \
-          -DCMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} && \
-        cmake --build build --target package
+        cmake \
+          -S . \
+          -B build \
+          -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
+          -D CMAKE_C_COMPILER=clang \
+          -D CMAKE_CXX_COMPILER=clang++
+        cmake --build build -j $(nproc) --target package
 
     - name: Package
       run: Packaging/nix/LinuxReleasePackaging.sh && mv devilutionx.tar.xz devilutionx-${{ matrix.cpu-arch }}-linux-gnu.tar.xz
