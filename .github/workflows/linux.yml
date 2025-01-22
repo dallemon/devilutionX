@@ -49,8 +49,8 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: add i386 cpu-arch
-      if: ${{ matrix.cpu-arch }} == i386
+    - if: ${{ matrix.cpu-arch }} == i386
+      name: add i386 cpu-arch
       run: sudo dpkg --add-architecture i386
 
     - name: Add clang repo
