@@ -22,7 +22,7 @@ concurrency:
 
 env:
   LLVM_VERSION: 19
-  
+
 jobs:
   build:
     strategy:
@@ -31,27 +31,21 @@ jobs:
         cpu-arch: 
           - amd64
           - arm64
-          - i386
         os: 
           - ubuntu-24.04
           - ubuntu-24.04-arm
+        toolchain:
+          - aarch64-linux-gnu-clang-static-libc++.toolchain.cmake
+          - linux_i386.toolchain.cmake
         exclude:
           - os: ubuntu-24.04
             cpu-arch: arm64
           - os: ubuntu-24.04-arm
             cpu-arch: amd64
-          - os: ubuntu-24.04-arm
-            cpu-arch: i386
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - if: ${{ matrix.cpu-arch }} == i386
-      name: add i386 cpu-arch
-      run: sudo dpkg --add-architecture i386
 
     - name: Add clang repo
       shell: bash  
@@ -82,20 +76,15 @@ jobs:
         restore-keys: ${{ github.workflow }}-v6-
 
     - name: Build
-      working-directory: ${{github.workspace}}
-      shell: bash
       env:
         CMAKE_BUILD_TYPE: ${{github.event_name == 'release' && 'Release' || 'RelWithDebInfo'}}
-      # We set DEVILUTIONX_SYSTEM_LIBFMT=OFF because its soversion changes frequently.
-      # We set DEVILUTIONX_SYSTEM_LIBSODIUM=OFF because its soversion changes frequently.
-      # We set DEVILUTIONX_SYSTEM_BZIP2=OFF because Fedora and Debian do not agree on how to link it.
       run: |
         cmake \
           -S . \
           -B build \
           -D CMAKE_BUILD_TYPE=${{env.CMAKE_BUILD_TYPE}} \
           -D CMAKE_C_COMPILER=clang \
-          -D CMAKE_CXX_COMPILER=clang++
+          -D CMAKE_CXX_COMPILER=clang++ \
         cmake --build build -j $(nproc) --target package
 
     - name: Package
