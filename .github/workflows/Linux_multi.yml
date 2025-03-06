@@ -55,7 +55,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Installs dependencies, including arm64 libraries (runs `sudo apt-get update` as part of it)
+      # Installs dependencies and libraries (runs `sudo apt-get update` as part of it)
       - name: Install dependencies
         run: Packaging/nix/debian-host-prep.sh
 
