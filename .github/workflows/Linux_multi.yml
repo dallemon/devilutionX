@@ -81,6 +81,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX=/usr \
             -DCPACK=ON \
             -DDISCORD_INTEGRATION=${{ matrix.discord }} \
+            -DBUILD_ASSETS_MPQ=OFF \
             -DBUILD_TESTING=OFF \
             -DDEVILUTIONX_SYSTEM_LIBFMT=OFF \
             -DDEVILUTIONX_SYSTEM_LIBSODIUM=OFF \
